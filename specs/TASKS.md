@@ -13,8 +13,8 @@
 | T03 | 0 | Esqueleto: `pyproject.toml` (hatchling, extras `dev`/`aws`/`embeddings`), `src/maestro/{domain,application,infrastructure,presentation}`, `maestro.toml`, `.env.example`, `.gitignore` (`.env`, `audit/`, `data/local/`, `out/`), `LICENSE`, `AGENTS.md` | P3, P2 | Codificação | 1 | Concluido | commit 3cff547 — `pyproject.toml`, `src/maestro/*`, `maestro.toml`, `.env.example`, `.gitignore`, `LICENSE`, `AGENTS.md` |
 | T04 | 0 | Qualidade: ruff + mypy (strict em `domain`), pytest + cobertura, import-linter (contratos de camada), pre-commit, gitleaks, pip-audit; `ci.yml` rodando tudo em push/PR | P9, CA-07 | Infra | 1 | Concluido | commit 3cff547 — ruff/mypy/import-linter (3 contratos KEPT)/pytest 86%/pre-commit/gitleaks/pip-audit; `.github/workflows/ci.yml` |
 | T05 | 0 | README v0 ("em construção", badges reais, propósito, roadmap por fases), `specs/` publicadas, 1º push, CI verde | CA-00 | Documentação | 0.5 | Concluido | push `1410478`, CI verde (quality 3.12/3.13 + security) — https://github.com/bife29/maestro/actions |
-| T06 | 1 | `domain`: entidades `Repository`, `PullRequest`, `Commit`, `Build`, `Deployment`, `Incident`, value objects de período; portas `DevOpsProvider`, `Clock`, `ChartRenderer` | PLAN §1 | Codificação | 1 | Aberto | — |
-| T07 | 1 | `GenerateSeed` + provider `local_json`: 6 repos `atlas-*`, 12 meses, perfis DORA distintos, `PR-07` (pequena, 2 achados plantados) e `PR-13` (80 arquivos); determinístico por `--seed`; comando `maestro seed` | F-01, RN-07 | Codificação | 1.5 | Aberto | — |
+| T06 | 1 | `domain`: entidades `Repository`, `PullRequest`, `Commit`, `Build`, `Deployment`, `Incident`, value objects de período; portas `DevOpsProvider`, `Clock`, `ChartRenderer` | PLAN §1 | Codificação | 1 | Em Andamento | branch `wip/fase-1`: `domain/entities.py`, `domain/metrics.py` (DORA + PR-flow + classificação), `domain/ports.py` (DevOpsProvider, DatasetWriter, ChartRenderer). Falta: testes e lint (11 avisos ruff) |
+| T07 | 1 | `GenerateSeed` + provider `local_json`: 6 repos `atlas-*`, 12 meses, perfis DORA distintos, `PR-07` (pequena, 2 achados plantados) e `PR-13` (80 arquivos); determinístico por `--seed`; comando `maestro seed` | F-01, RN-07 | Codificação | 1.5 | Em Andamento | branch `wip/fase-1`: `application/seed.py` (6 perfis, PR-07/PR-13) e `infrastructure/devops/local_json.py`. Falta: comando `maestro seed`, testes |
 | T08 | 1 | `ComputeDora`: lead time, deployment frequency, CFR, MTTR por repo/período + classificação Elite/High/Medium/Low; `ComputePrFlow`; comando `maestro metrics dora|pr-flow` (Rich + `--json`) | F-02, F-03 | Codificação | 1.5 | Aberto | — |
 | T09 | 1 | Testes: unitários das métricas com casos de borda (zero deploys, incidente sem fim), **hypothesis** (monotonicidade, invariantes), teste de determinismo do seed | CA-01 | Teste | 1 | Aberto | — |
 | T10 | 1 | `RenderCharts` (matplotlib): 4 painéis DORA mensal, distribuição de tamanho de PR, heatmap deploys × dia da semana, funil de revisão; `maestro charts` → `docs/assets/charts/*.png`; push dos PNGs | F-04 | Codificação | 1 | Aberto | — |
@@ -39,7 +39,7 @@
 | T29 | 6 | Provider LLM `openai_compatible` (timeout/retry/custo); `bedrock` atrás de extra `[aws]` | F-12 | Integração | 1.5 | Aberto | — |
 | T30 | 6 | Demo real: `maestro review <PR de repo meu> --provider github` em dry-run; print na wiki; release `v0.2.0` | CA-06 | Integração | 0.5 | Aberto | — |
 
-**Total estimado:** 28 h (3 h concluídas — Fase 0 concluída em 24/11/2026).
+**Total estimado:** 28 h (3 h concluídas — Fase 0 concluída em 24/11/2026; Fase 1 **pausada** em 24/11 13:55 com WIP em `wip/fase-1`).
 
 ## Pré-condições (fora do squad)
 
@@ -49,3 +49,7 @@
 | P-02 | Credencial GitHub para push (já existe `git:https://github.com` no Credential Manager; sem `gh` CLI) e para criar o repo (via web ou token com escopo `repo`) | Michel | Concluido (credencial do Credential Manager via `git credential fill`, usada em memória) |
 | P-03 | Python 3.12+ instalado fora do venv do trabalho (hoje `python` global não está no PATH) | Michel | Concluido (py 3.14 via `py` launcher; venv próprio em `maestro\.venv`) |
 | P-04 | Confirmar que o projeto fica em `C:\Projetos\Michel\maestro` e fora de qualquer relatório (P12) | Michel | Concluido (aprovado 24/11) |
+
+## Checkpoint de pausa — 24/11/2026 13:55
+
+**Retomar com:** `git checkout wip/fase-1` → corrigir lint (`ruff check src`: PLR0917 em `_build_change` → agrupar params num dataclass; E501; RUF002 travessões/sinal de menos nas docstrings) → criar `application/metrics.py` (`ComputeDora`, `ComputePrFlow`, `month_windows`), `application/charts.py` (`RenderCharts`: dora_trend, pr_size, heatmap, funnel), `infrastructure/charts/matplotlib_png.py` (Agg), comandos CLI `seed` / `metrics dora|pr-flow` / `charts` → testes T09 → PNGs T10 → merge em `main` via PR com CI verde.
