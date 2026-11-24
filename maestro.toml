@@ -1,0 +1,29 @@
+# Configuração do Maestro. Valores podem ser sobrescritos por variáveis MAESTRO_<SECAO>__<CHAVE>.
+
+[devops]
+provider = "local"          # local | github | azure_devops
+data_dir = "data/local"
+
+[llm]
+provider = "dry"            # dry | openai_compatible | bedrock
+timeout_s = 60
+max_retries = 2
+max_tokens = 4000
+
+[review]
+max_files = 50              # gate de porte (P8) — acima disso: REVISAO_MANUAL sem chamar o LLM
+max_lines = 3000
+cost_limit_usd = 0.50
+kb_top_k = 6
+
+[kb]
+path = "data/local/kb.sqlite"
+sources = ["data/sample/docs"]
+
+[audit]
+dir = "audit"
+
+[seed]
+default = 42
+repositories = 6
+months = 12
