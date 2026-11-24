@@ -8,11 +8,11 @@
 
 | ID | Fase | Tarefa | Itens | Tipo | Est. | Status | Evidência |
 |---|---|---|---|---|---|---|---|
-| T01 | 0 | Aprovar D-01…D-05 (nome, idioma, wiki, stack do demo, integração) e fixar no `constitution.md`/SPEC | SPEC §6 | Decisão | 0.5 | Aberto | — |
+| T01 | 0 | Aprovar D-01…D-05 (nome, idioma, wiki, stack do demo, integração) e fixar no `constitution.md`/SPEC | SPEC §6 | Decisão | 0.5 | Concluido | Aprovado pelo dono em 24/11/2026: `maestro` · README PT-BR+EN · MkDocs Material · demo Python · GitHub primeiro |
 | T02 | 0 | Criar repo público `bife29/maestro` (MIT), branch protection em `main` (CI obrigatório), descrição + topics (`mcp`, `rag`, `ai-agents`, `dora-metrics`, `clean-architecture`, `python`) | CA-00 | Infra | 0.5 | Aberto | — |
-| T03 | 0 | Esqueleto: `pyproject.toml` (hatchling, extras `dev`/`aws`/`embeddings`), `src/maestro/{domain,application,infrastructure,presentation}`, `maestro.toml`, `.env.example`, `.gitignore` (`.env`, `audit/`, `data/local/`, `out/`), `LICENSE`, `AGENTS.md` | P3, P2 | Codificação | 1 | Aberto | — |
-| T04 | 0 | Qualidade: ruff + mypy (strict em `domain`), pytest + cobertura, import-linter (contratos de camada), pre-commit, gitleaks, pip-audit; `ci.yml` rodando tudo em push/PR | P9, CA-07 | Infra | 1 | Aberto | — |
-| T05 | 0 | README v0 ("em construção", badges reais, propósito, roadmap por fases), `specs/` publicadas, 1º push, CI verde | CA-00 | Documentação | 0.5 | Aberto | — |
+| T03 | 0 | Esqueleto: `pyproject.toml` (hatchling, extras `dev`/`aws`/`embeddings`), `src/maestro/{domain,application,infrastructure,presentation}`, `maestro.toml`, `.env.example`, `.gitignore` (`.env`, `audit/`, `data/local/`, `out/`), `LICENSE`, `AGENTS.md` | P3, P2 | Codificação | 1 | Concluido | commit 3cff547 — `pyproject.toml`, `src/maestro/*`, `maestro.toml`, `.env.example`, `.gitignore`, `LICENSE`, `AGENTS.md` |
+| T04 | 0 | Qualidade: ruff + mypy (strict em `domain`), pytest + cobertura, import-linter (contratos de camada), pre-commit, gitleaks, pip-audit; `ci.yml` rodando tudo em push/PR | P9, CA-07 | Infra | 1 | Concluido | commit 3cff547 — ruff/mypy/import-linter (3 contratos KEPT)/pytest 86%/pre-commit/gitleaks/pip-audit; `.github/workflows/ci.yml` |
+| T05 | 0 | README v0 ("em construção", badges reais, propósito, roadmap por fases), `specs/` publicadas, 1º push, CI verde | CA-00 | Documentação | 0.5 | Em Andamento | README v0 + specs no commit 3cff547; falta push e CI verde (depende de T02) |
 | T06 | 1 | `domain`: entidades `Repository`, `PullRequest`, `Commit`, `Build`, `Deployment`, `Incident`, value objects de período; portas `DevOpsProvider`, `Clock`, `ChartRenderer` | PLAN §1 | Codificação | 1 | Aberto | — |
 | T07 | 1 | `GenerateSeed` + provider `local_json`: 6 repos `atlas-*`, 12 meses, perfis DORA distintos, `PR-07` (pequena, 2 achados plantados) e `PR-13` (80 arquivos); determinístico por `--seed`; comando `maestro seed` | F-01, RN-07 | Codificação | 1.5 | Aberto | — |
 | T08 | 1 | `ComputeDora`: lead time, deployment frequency, CFR, MTTR por repo/período + classificação Elite/High/Medium/Low; `ComputePrFlow`; comando `maestro metrics dora|pr-flow` (Rich + `--json`) | F-02, F-03 | Codificação | 1.5 | Aberto | — |
@@ -39,13 +39,13 @@
 | T29 | 6 | Provider LLM `openai_compatible` (timeout/retry/custo); `bedrock` atrás de extra `[aws]` | F-12 | Integração | 1.5 | Aberto | — |
 | T30 | 6 | Demo real: `maestro review <PR de repo meu> --provider github` em dry-run; print na wiki; release `v0.2.0` | CA-06 | Integração | 0.5 | Aberto | — |
 
-**Total estimado:** 28 h (0 h concluídas).
+**Total estimado:** 28 h (2.5 h concluídas).
 
 ## Pré-condições (fora do squad)
 
 | # | Item | Dono | Status |
 |---|---|---|---|
-| P-01 | Decisões D-01…D-05 da SPEC §6 | Michel | Aberto |
+| P-01 | Decisões D-01…D-05 da SPEC §6 | Michel | Concluido |
 | P-02 | Credencial GitHub para push (já existe `git:https://github.com` no Credential Manager; sem `gh` CLI) e para criar o repo (via web ou token com escopo `repo`) | Michel | Parcial |
-| P-03 | Python 3.12+ instalado fora do venv do trabalho (hoje `python` global não está no PATH) | Michel | Aberto |
-| P-04 | Confirmar que o projeto fica em `C:\Projetos\Michel\maestro` e fora de qualquer relatório (P12) | Michel | Proposto |
+| P-03 | Python 3.12+ instalado fora do venv do trabalho (hoje `python` global não está no PATH) | Michel | Concluido (py 3.14 via `py` launcher; venv próprio em `maestro\.venv`) |
+| P-04 | Confirmar que o projeto fica em `C:\Projetos\Michel\maestro` e fora de qualquer relatório (P12) | Michel | Concluido (aprovado 24/11) |
