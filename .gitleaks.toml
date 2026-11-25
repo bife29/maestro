@@ -1,0 +1,11 @@
+# Gitleaks configuration — extends the default rules.
+# The only allowlisted path is the synthetic dataset generator: it plants a FAKE credential inside the
+# demo pull request (PR-07) so the code-review agent (phase 4) has a real finding to report.
+# Nothing in that file is a usable secret. Everything else in the repository is scanned normally.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic planted finding for the review-agent demo"
+paths = ['''src/maestro/application/seed\.py''']
