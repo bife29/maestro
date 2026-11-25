@@ -31,6 +31,15 @@ DEMO_LARGE_PR_ID = "PR-13"
 
 
 @dataclass(frozen=True, slots=True)
+class _ChangeContext:
+    repo: Repository
+    devs: list[str]
+    pr_id: str
+    created: datetime
+    profile: RepoProfile
+
+
+@dataclass(frozen=True, slots=True)
 class RepoProfile:
     name: str
     language: str
@@ -106,7 +115,7 @@ class GenerateSeed:
                     seconds=rng.uniform(0, (self.end - start).total_seconds() - 3 * 86_400)
                 )
                 pr, pr_commits, deploy, incident = self._build_change(
-                    rng, repo, devs, pr_id, created, profile
+                    rng, _ChangeContext(repo=repo, devs=devs, pr_id=pr_id, created=created, profile=profile)
                 )
                 prs.append(pr)
                 commits.extend(pr_commits)
@@ -125,19 +134,15 @@ class GenerateSeed:
         )
 
     def _build_change(
-        self,
-        rng: random.Random,
-        repo: Repository,
-        devs: list[str],
-        pr_id: str,
-        created: datetime,
-        profile: RepoProfile,
+        self, rng: random.Random, ctx: _ChangeContext
     ) -> tuple[PullRequest, list[Commit], Deployment | None, Incident | None]:
+        repo, devs, pr_id, created, profile = ctx.repo, ctx.devs, ctx.pr_id, ctx.created, ctx.profile
         author = rng.choice(devs)
         n_files = max(1, int(_gauss_pos(rng, 6.0, 0.7)))
+        kinds = ("service", "repo", "handler", "model")
         files = tuple(
             ChangedFile(
-                path=f"src/{rng.choice(NOUNS).replace(' ', '_')}/{rng.choice(('service', 'repo', 'handler', 'model'))}_{k}.py",
+                path=f"src/{rng.choice(NOUNS).replace(' ', '_')}/{rng.choice(kinds)}_{k}.py",
                 additions=int(_gauss_pos(rng, 25.0, 0.8)),
                 deletions=int(_gauss_pos(rng, 8.0, 0.8)),
             )
@@ -232,8 +237,11 @@ class GenerateSeed:
                             "+\n"
                             '+API_KEY = "sk-live-9f8e7d6c5b4a3f2e1d0c"\n'
                             "+\n"
-                            "+def export_settlements(conn: sqlite3.Connection, merchant_id: str) -> list[tuple]:\n"
-                            '+    query = "SELECT * FROM settlements WHERE merchant_id = \'" + merchant_id + "\'"\n'
+                            "+def export_settlements(conn: sqlite3.Connection, merchant_id: str) -> list:\n"
+                            "+    query = (\n"
+                            '+        "SELECT * FROM settlements WHERE merchant_id = \'"\n'
+                            '+        + merchant_id + "\'"\n'
+                            "+    )\n"
                             "+    return conn.execute(query).fetchall()\n"
                         ),
                     ),

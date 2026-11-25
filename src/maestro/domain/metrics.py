@@ -33,7 +33,7 @@ def worst(*levels: DoraLevel) -> DoraLevel:
 
 
 def classify_deployment_frequency(per_week: float) -> DoraLevel:
-    """Elite: on demand (≥ daily) · High: weekly–daily · Medium: monthly–weekly · Low: < monthly."""
+    """Elite: on demand (>= daily) · High: weekly to daily · Medium: monthly to weekly · Low: < monthly."""
     if per_week >= 7:
         return DoraLevel.ELITE
     if per_week >= 1:
@@ -44,7 +44,7 @@ def classify_deployment_frequency(per_week: float) -> DoraLevel:
 
 
 def classify_lead_time(hours: float | None) -> DoraLevel:
-    """Elite: < 1 day · High: 1 day–1 week · Medium: 1 week–1 month · Low: > 1 month."""
+    """Elite: < 1 day · High: 1 day to 1 week · Medium: 1 week to 1 month · Low: > 1 month."""
     if hours is None:
         return DoraLevel.LOW
     if hours < HOURS_PER_DAY:
@@ -126,10 +126,10 @@ def compute_dora(
 ) -> DoraMetrics:
     """Compute the four DORA metrics for one repository inside `period`.
 
-    * Lead time = deployed_at − authored_at of the deployed commit (median).
-    * Change failure rate = deployments that failed **or** caused an incident ÷ deployments.
-    * MTTR = resolved_at − started_at of incidents started in the period (median); unresolved ones are excluded
-      from the median but still counted in `incidents`.
+    * Lead time = deployed_at - authored_at of the deployed commit (median).
+    * Change failure rate = deployments that failed **or** caused an incident / deployments.
+    * MTTR = resolved_at - started_at of incidents started in the period (median); unresolved ones are
+      excluded from the median but still counted in `incidents`.
     """
     deploys = [d for d in deployments if d.repository_id == repository_id and period.contains(d.deployed_at)]
     incs = [i for i in incidents if i.repository_id == repository_id and period.contains(i.started_at)]
