@@ -11,7 +11,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Clean Architecture](https://img.shields.io/badge/architecture-clean%20%7C%20import--linter-6f42c1)](specs/PLAN.md)
 
-> 🚧 **Em construção — Fase 0 de 6.** Acompanhe o progresso em [`specs/TASKS.md`](specs/TASKS.md).
+> 🚧 **Em construção — Fases 0 e 1 de 6 concluídas.** Acompanhe o progresso em [`specs/TASKS.md`](specs/TASKS.md).
 
 </div>
 
@@ -29,13 +29,27 @@ O Maestro reúne essas práticas em um toolkit **genérico, reproduzível e audi
 credencial**, sobre um dataset sintético gerado pelo próprio projeto. Integrações reais (GitHub, Azure DevOps,
 LLMs) são opcionais.
 
-## Quick start (em breve)
+## Quick start
 
 ```bash
 git clone https://github.com/bife29/maestro && cd maestro
+python -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-maestro demo        # seed → métricas DORA → gráficos → KB → parecer de code review (dry-run)
+maestro demo        # seed → métricas DORA → fluxo de PR → 4 gráficos em docs/assets/charts/
 ```
+
+```text
+maestro seed                      # 6 repositórios sintéticos, 12 meses, determinístico (--seed 42)
+maestro metrics dora [--json]     # deploys/semana · lead time p50 · CFR · MTTR + nível Elite/High/Medium/Low
+maestro metrics pr-flow           # 1ª revisão p50 · ciclo · tamanho · retrabalho · % revisadas por IA
+maestro charts                    # PNGs: tendência DORA, distribuição de PR, heatmap de deploys, funil
+maestro doctor                    # checa Python, config e providers
+```
+
+![DORA metrics — monthly trend](docs/assets/charts/dora_trend.png)
+
+> O "Overall" é o **pior** dos quatro níveis — um time é tão rápido quanto sua capacidade mais lenta. A regra é
+> deliberada e documentada em [`domain/metrics.py`](src/maestro/domain/metrics.py).
 
 ## Mapa de competências → módulos
 
@@ -54,8 +68,8 @@ maestro demo        # seed → métricas DORA → gráficos → KB → parecer d
 
 | Fase | Entrega | Status |
 |---|---|---|
-| 0 | Fundação: esqueleto Clean Arch, CI, qualidade, specs | 🔄 em andamento |
-| 1 | `seed` · `metrics dora` · `charts` | ⏳ |
+| 0 | Fundação: esqueleto Clean Arch, CI, qualidade, specs | ✅ 24/11 |
+| 1 | `seed` · `metrics dora` · `metrics pr-flow` · `charts` · `demo` — cobertura 95% | ✅ 25/11 |
 | 2 | `kb index/ask/status/note` | ⏳ |
 | 3 | `mcp serve` (6 tools, allow-list, audit) | ⏳ |
 | 4 | `review` — agente de code review governado | ⏳ |
