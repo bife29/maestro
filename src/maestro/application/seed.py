@@ -235,7 +235,8 @@ class GenerateSeed:
                         patch=(
                             "+import sqlite3\n"
                             "+\n"
-                            '+API_KEY = "sk-live-9f8e7d6c5b4a3f2e1d0c"\n'
+                            # Planted finding for the review-agent demo (phase 4); not a real credential.
+                            '+API_KEY = "sk-live-9f8e7d6c5b4a3f2e1d0c"\n'  # gitleaks:allow
                             "+\n"
                             "+def export_settlements(conn: sqlite3.Connection, merchant_id: str) -> list:\n"
                             "+    query = (\n"
